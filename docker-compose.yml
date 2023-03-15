@@ -1,0 +1,53 @@
+version: '3.8'
+
+networks:
+  app-network:
+
+volumes:
+  app-data:
+
+services:
+  app:
+    image: nginx:1.21.6-alpine
+    container_name: app-laravel10-pattern
+    restart: unless-stopped
+    ports:
+      - "8989:80"
+    volumes:
+      - ./:/var/www
+      - .docker/nginx:/etc/nginx/conf.d
+    networks:
+      app-network:
+
+  php:
+    build:
+      context: .docker/php
+      dockerfile: dockerfile
+    container_name: php-laravel10-pattern
+    volumes:
+      - ./:/var/www
+      - .docker/php/php.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      app-network:
+
+  postgres:
+    image: postgres
+    container_name: postgres-laravel10-pattern
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: laravel10-pattern
+      PGDATA: /data/postgres
+    # volumes:
+    #   - .docker/postgres:/data/postgres
+    networks:
+      app-network:
+
+  redis:
+    container_name: redis-laravel10-pattern
+    image: redis:latest
+    networks:
+      app-network:

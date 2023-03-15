@@ -1,0 +1,55 @@
+/*** Alteração modo celular ***/
+@media all and (max-width: 800px) {
+  /*** Tabela resposiva ***/
+  table tbody tr td {
+    display: block;
+    text-align: right;
+
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  table tbody tr td::before {
+    content: attr(data-title);
+    position: absolute;
+    left: 30px;
+    display: block;
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+    width: 25%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  table {
+    border: none;
+  }
+
+  table thead {
+    display: none;
+  }
+
+  table tbody tr {
+    margin-bottom: 10px;
+    display: block;
+    border: solid 1px #dee2e6;
+  }
+}
+
+@media all and (max-width: 320px) {
+  table tbody tr td::before {
+    content: attr(data-title);
+    position: absolute;
+    left: 30px;
+    display: block;
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+    width: 17%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
