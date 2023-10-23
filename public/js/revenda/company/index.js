@@ -4,6 +4,171 @@ $(function($) {
         _token = $(':input[name=_token]').val(),
         userPermission = JSON.parse(localStorage.getItem('userPermission'));
 
+  const makeContacts = () => {
+    const itens = JSON.parse($(':input[name=arrContact]').val());
+    let tableContact = $('#tableContact').find('tbody');
+
+    tableContact.html('');
+    for(let i in itens) {
+      if(itens[i].insert == 'S') {
+        tableContact.append(`
+          <tr data-id="${i}">
+              <td>
+                ${
+                  `<div class="form-check mt-2">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="${itens[i].type}_contact"
+                      value="${itens[i].value}"
+                      data-id="${i}"
+                      ${itens[i].main ? 'checked' : ''}
+                    >
+                    <label class="form-check-label">${itens[i].main ? 'Principal' : '&nbsp;'}</label>
+                  </div>`
+                }
+              </td>
+              <td data-title="Contato">${itens[i].value}</td>
+              <td data-title="Tipo">${itens[i].type == 'E' ? 'E-mail' : 'Telefone'}</td>
+              <td data-title="Status">${
+                itens[i].active ?
+                `<span class="bg-green-200 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">Ativo</span>`
+                :
+                `<span class="bg-red-200 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-900">Inativo</span>`
+              }</td>
+              <td class="space-x-4">
+                <div class="flex gap-4 justify-center">
+                  <a href="#" name="btnDeleteContact" data-id="${i}" title="Excluir o endereço">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <g color="#b91c1c">
+                        <path d="M3 6h18"></path>
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                      </g>
+                    </svg>
+                  </a>
+
+                  <a href="#" name="btnEditContact" data-id="${i}" title="Editar o endereço">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <g color="#4338ca">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                      </g>
+                    </svg>
+                  </a>
+
+                  <a href="#" name="btnToggleActiveContact" data-id="${i}" title="${itens[i].active ? 'Desativar endereço': 'Ativar endereço'}">
+                    ${
+                      itens[i].active ?
+                      `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <g color="#b91c1c">
+                          <path d="M18.36 6.64A9 9 0 0 1 20.77 15"></path>
+                          <path d="M6.16 6.16a9 9 0 1 0 12.68 12.68"></path>
+                          <path d="M12 2v4"></path>
+                          <path d="m2 2 20 20"></path>
+                        </g>
+                      </svg>`
+                      : `
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <g color="#15803d">
+                          <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                          <line x1="12" y1="2" x2="12" y2="12"></line>
+                        </g>
+                      </svg>
+                      `
+                    }
+                  </a>
+                </div>
+              </td>
+          </tr>
+        `);
+      }
+    }
+  }
+
+  const makeAddresses = () => {
+    const itens = JSON.parse($(':input[name=arrAddress]').val());
+    let tableAddress = $('#tableAddress').find('tbody');
+
+    tableAddress.html('');
+    for(let i in itens) {
+      if(itens[i].insert == 'S') {
+        tableAddress.append(`
+          <tr data-id="${i}">
+              <td>
+                ${
+                  `<div class="form-check mt-2">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="isMainAddress"
+                      value="${i}"
+                      data-id="${i}"
+                      ${itens[i].main ? 'checked' : ''}
+                    >
+                    <label class="form-check-label">${itens[i].main ? 'Principal' : '&nbsp;'}</label>
+                  </div>`
+                }
+              </td>
+              <td>
+                ${itens[i].zipCode} - ${itens[i].address}, nº ${itens[i].number} <br>
+                ${itens[i].neighborhood}, ${itens[i].county}
+                ${itens[i].complement ? `<br>Complemento: ${itens[i].complement}`: ''}
+              </td>
+              <td data-title="Status">${
+                itens[i].active ?
+                `<span class="bg-green-200 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">Ativo</span>`
+                :
+                `<span class="bg-red-200 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-900">Inativo</span>`
+              }</td>
+              <td class="space-x-4">
+                <div class="flex gap-4 justify-center">
+                  <a href="#" name="btnDeleteAddress" data-id="${i}" title="Excluir o endereço">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <g color="#b91c1c">
+                        <path d="M3 6h18"></path>
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                      </g>
+                    </svg>
+                  </a>
+
+                  <a href="#" name="btnEditAddress" data-id="${i}" title="Editar o endereço">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <g color="#4338ca">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                      </g>
+                    </svg>
+                  </a>
+
+                  <a href="#" name="btnToggleActiveAddress" data-id="${i}" title="${itens[i].active ? 'Desativar endereço': 'Ativar endereço'}">
+                    ${
+                      itens[i].active ?
+                      `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <g color="#b91c1c">
+                          <path d="M18.36 6.64A9 9 0 0 1 20.77 15"></path>
+                          <path d="M6.16 6.16a9 9 0 1 0 12.68 12.68"></path>
+                          <path d="M12 2v4"></path>
+                          <path d="m2 2 20 20"></path>
+                        </g>
+                      </svg>`
+                      : `
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <g color="#15803d">
+                          <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                          <line x1="12" y1="2" x2="12" y2="12"></line>
+                        </g>
+                      </svg>
+                      `
+                    }
+                  </a>
+                </div>
+              </td>
+          </tr>
+        `);
+      }
+    }
+  }
+
   $('.select-2-county').select2({
     ajax: {
       url: `${_url}/ajax/countySearch`,
@@ -88,7 +253,6 @@ $(function($) {
 
     let arrData = {},
         itens = JSON.parse($(':input[name=arrContact]').val()),
-        tableContact = $('#tableContact').find('tbody'),
         main = true;
 
     if(!contactValue) {
@@ -114,81 +278,7 @@ $(function($) {
     itens.push(arrData);
     $(':input[name=arrContact]').val(JSON.stringify(itens));
 
-    tableContact.html('');
-    for(let i in itens) {
-      if(itens[i].insert == 'S') {
-        tableContact.append(`
-          <tr data-id="${i}">
-              <td>
-                ${
-                  `<div class="form-check mt-2">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="${itens[i].type}_contact"
-                      value="${itens[i].value}"
-                      data-id="${i}"
-                      ${itens[i].main ? 'checked' : ''}
-                    >
-                    <label class="form-check-label">${itens[i].main ? 'Principal' : '&nbsp;'}</label>
-                  </div>`
-                }
-              </td>
-              <td data-title="Contato">${itens[i].value}</td>
-              <td data-title="Tipo">${itens[i].type == 'E' ? 'E-mail' : 'Telefone'}</td>
-              <td data-title="Status">${
-                itens[i].active ?
-                `<span class="bg-green-200 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">Ativo</span>`
-                :
-                `<span class="bg-red-200 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-900">Inativo</span>`
-              }</td>
-              <td class="space-x-4">
-                <div class="flex gap-4 justify-center">
-                  <a href="#" name="btnDeleteContact" data-id="${i}" title="Excluir o endereço">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <g color="#b91c1c">
-                        <path d="M3 6h18"></path>
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                      </g>
-                    </svg>
-                  </a>
-
-                  <a href="#" name="btnEditContact" data-id="${i}" title="Editar o endereço">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <g color="#4338ca">
-                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                      </g>
-                    </svg>
-                  </a>
-
-                  <a href="#" name="btnToggleActiveContact" data-id="${i}" title="${itens[i].active ? 'Desativar endereço': 'Ativar endereço'}">
-                    ${
-                      itens[i].active ?
-                      `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <g color="#b91c1c">
-                          <path d="M18.36 6.64A9 9 0 0 1 20.77 15"></path>
-                          <path d="M6.16 6.16a9 9 0 1 0 12.68 12.68"></path>
-                          <path d="M12 2v4"></path>
-                          <path d="m2 2 20 20"></path>
-                        </g>
-                      </svg>`
-                      : `
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <g color="#15803d">
-                          <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
-                          <line x1="12" y1="2" x2="12" y2="12"></line>
-                        </g>
-                      </svg>
-                      `
-                    }
-                  </a>
-                </div>
-              </td>
-          </tr>
-        `);
-      }
-    }
+    makeContacts();
 
     $(':input[name=contact_value]').val('');
     $('select[name=contact_type]').val('E').trigger('change');
@@ -229,8 +319,7 @@ $(function($) {
           contactValue = $(':input[name=contact_value]').val(),
           elmMessage = $('#divMessage');
 
-    let itens = JSON.parse($(':input[name=arrContact]').val()),
-        tableContact = $('#tableContact').find('tbody');
+    let itens = JSON.parse($(':input[name=arrContact]').val());
 
     if(!contactValue) {
       showMessageBox('Obrigatório informar o contato', 'D', elmMessage, 'after');
@@ -245,83 +334,9 @@ $(function($) {
 
     $(':input[name=arrContact]').val(JSON.stringify(itens));
 
-    tableContact.html('');
-    for(let i in itens) {
-      if(itens[i].insert == 'S') {
-        tableContact.append(`
-          <tr data-id="${i}">
-              <td>
-                ${
-                  `<div class="form-check mt-2">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="${itens[i].type}_contact"
-                      value="${itens[i].value}"
-                      data-id="${i}"
-                      ${itens[i].main ? 'checked' : ''}
-                    >
-                    <label class="form-check-label">${itens[i].main ? 'Principal' : '&nbsp;'}</label>
-                  </div>`
-                }
-              </td>
-              <td data-title="Contato">${itens[i].value}</td>
-              <td data-title="Tipo">${itens[i].type == 'E' ? 'E-mail' : 'Telefone'}</td>
-              <td data-title="Status">${
-                itens[i].active ?
-                `<span class="bg-green-200 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">Ativo</span>`
-                :
-                `<span class="bg-red-200 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-900">Inativo</span>`
-              }</td>
-              <td class="space-x-4">
-                <div class="flex gap-4 justify-center">
-                  <a href="#" name="btnDeleteContact" data-id="${i}" title="Excluir o endereço">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <g color="#b91c1c">
-                        <path d="M3 6h18"></path>
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                      </g>
-                    </svg>
-                  </a>
+    makeContacts();
 
-                  <a href="#" name="btnEditContact" data-id="${i}" title="Editar o endereço">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <g color="#4338ca">
-                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                      </g>
-                    </svg>
-                  </a>
-
-                  <a href="#" name="btnToggleActiveContact" data-id="${i}" title="${itens[i].active ? 'Desativar endereço': 'Ativar endereço'}">
-                    ${
-                      itens[i].active ?
-                      `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <g color="#b91c1c">
-                          <path d="M18.36 6.64A9 9 0 0 1 20.77 15"></path>
-                          <path d="M6.16 6.16a9 9 0 1 0 12.68 12.68"></path>
-                          <path d="M12 2v4"></path>
-                          <path d="m2 2 20 20"></path>
-                        </g>
-                      </svg>`
-                      : `
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <g color="#15803d">
-                          <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
-                          <line x1="12" y1="2" x2="12" y2="12"></line>
-                        </g>
-                      </svg>
-                      `
-                    }
-                  </a>
-                </div>
-              </td>
-          </tr>
-        `);
-      }
-    }
-
-
+    let tableContact = $('#tableContact').find('tbody');
     const tr = tableContact.find(`tr[data-id=${controlId}]`);
     tr.css('background-color', '#fcf0a8');
     tr.css('transition', 'background-color 1000ms linear');
@@ -373,6 +388,7 @@ $(function($) {
       modal.hide();
       $(':input[name=arrContact]').val(JSON.stringify(itens));
       tableContact.find(`tr[data-id=${controlId}]`).html('');
+      makeContacts();
     } else {
       let itens = JSON.parse($(':input[name=arrAddress]').val()),
           tableAddress = $('#tableAddress').find('tbody');
@@ -388,6 +404,7 @@ $(function($) {
       modal.hide();
       $(':input[name=arrAddress]').val(JSON.stringify(itens));
       tableAddress.find(`tr[data-id=${controlId}]`).html('');
+      makeAddresses();
     }
   });
 
@@ -397,8 +414,7 @@ $(function($) {
     const contactType = $(this).attr('name').split('_')[0],
           controlId = $(this).attr('data-id');
 
-    let itens = JSON.parse($(':input[name=arrContact]').val()),
-        tableContact = $('#tableContact').find('tbody');
+    let itens = JSON.parse($(':input[name=arrContact]').val());
 
     for(let i in itens) {
       if(i === controlId && itens[i].type === contactType) {
@@ -410,81 +426,7 @@ $(function($) {
 
     $(':input[name=arrContact]').val(JSON.stringify(itens));
 
-    tableContact.html('');
-    for(let i in itens) {
-      if(itens[i].insert == 'S') {
-        tableContact.append(`
-          <tr data-id="${i}">
-              <td>
-                ${
-                  `<div class="form-check mt-2">
-                    <input
-                      class="form-check-input h-3"
-                      type="radio"
-                      name="${itens[i].type}_contact"
-                      value="${itens[i].value}"
-                      data-id="${i}"
-                      ${itens[i].main ? 'checked' : ''}
-                    >
-                    <label class="form-check-label">${itens[i].main ? 'Principal' : '&nbsp;'}</label>
-                  </div>`
-                }
-              </td>
-              <td data-title="Contato">${itens[i].value}</td>
-              <td data-title="Tipo">${itens[i].type == 'E' ? 'E-mail' : 'Telefone'}</td>
-              <td data-title="Status">${
-                itens[i].active ?
-                `<span class="bg-green-200 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">Ativo</span>`
-                :
-                `<span class="bg-red-200 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-900">Inativo</span>`
-              }</td>
-              <td class="space-x-4">
-                <div class="flex gap-4 justify-center">
-                  <a href="#" name="btnDeleteContact" data-id="${i}" title="Excluir o endereço">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <g color="#b91c1c">
-                        <path d="M3 6h18"></path>
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                      </g>
-                    </svg>
-                  </a>
-
-                  <a href="#" name="btnEditContact" data-id="${i}" title="Editar o endereço">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <g color="#4338ca">
-                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                      </g>
-                    </svg>
-                  </a>
-
-                  <a href="#" name="btnToggleActiveContact" data-id="${i}" title="${itens[i].active ? 'Desativar endereço': 'Ativar endereço'}">
-                    ${
-                      itens[i].active ?
-                      `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <g color="#b91c1c">
-                          <path d="M18.36 6.64A9 9 0 0 1 20.77 15"></path>
-                          <path d="M6.16 6.16a9 9 0 1 0 12.68 12.68"></path>
-                          <path d="M12 2v4"></path>
-                          <path d="m2 2 20 20"></path>
-                        </g>
-                      </svg>`
-                      : `
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <g color="#15803d">
-                          <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
-                          <line x1="12" y1="2" x2="12" y2="12"></line>
-                        </g>
-                      </svg>
-                      `
-                    }
-                  </a>
-                </div>
-              </td>
-          </tr>
-        `);
-      }
-    }
+    makeContacts();
   });
 
   $(document).on('click', 'a[name=btnToggleActiveContact]', function(e) {
@@ -584,7 +526,6 @@ $(function($) {
     let arrData = {},
         errors = [],
         itens = JSON.parse($(':input[name=arrAddress]').val()),
-        tableAddress = $('#tableAddress').find('tbody'),
         main = true;
 
     if(!zipCode)
@@ -626,84 +567,7 @@ $(function($) {
     itens.push(arrData);
     $(':input[name=arrAddress]').val(JSON.stringify(itens));
 
-    tableAddress.html('');
-    for(let i in itens) {
-      if(itens[i].insert == 'S') {
-        tableAddress.append(`
-          <tr data-id="${i}">
-              <td>
-                ${
-                  `<div class="form-check mt-2">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="isMainAddress"
-                      value="${i}"
-                      data-id="${i}"
-                      ${itens[i].main ? 'checked' : ''}
-                    >
-                    <label class="form-check-label">${itens[i].main ? 'Principal' : '&nbsp;'}</label>
-                  </div>`
-                }
-              </td>
-              <td>
-                ${itens[i].zipCode} - ${itens[i].address}, nº ${itens[i].number} <br>
-                ${itens[i].neighborhood}, ${itens[i].county}
-                ${itens[i].complement ? `<br>Complemento: ${itens[i].complement}`: ''}
-              </td>
-              <td data-title="Status">${
-                itens[i].active ?
-                `<span class="bg-green-200 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">Ativo</span>`
-                :
-                `<span class="bg-red-200 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-900">Inativo</span>`
-              }</td>
-              <td class="space-x-4">
-                <div class="flex gap-4 justify-center">
-                  <a href="#" name="btnDeleteAddress" data-id="${i}" title="Excluir o endereço">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <g color="#b91c1c">
-                        <path d="M3 6h18"></path>
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                      </g>
-                    </svg>
-                  </a>
-
-                  <a href="#" name="btnEditAddress" data-id="${i}" title="Editar o endereço">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <g color="#4338ca">
-                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                      </g>
-                    </svg>
-                  </a>
-
-                  <a href="#" name="btnToggleActiveAddress" data-id="${i}" title="${itens[i].active ? 'Desativar endereço': 'Ativar endereço'}">
-                    ${
-                      itens[i].active ?
-                      `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <g color="#b91c1c">
-                          <path d="M18.36 6.64A9 9 0 0 1 20.77 15"></path>
-                          <path d="M6.16 6.16a9 9 0 1 0 12.68 12.68"></path>
-                          <path d="M12 2v4"></path>
-                          <path d="m2 2 20 20"></path>
-                        </g>
-                      </svg>`
-                      : `
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <g color="#15803d">
-                          <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
-                          <line x1="12" y1="2" x2="12" y2="12"></line>
-                        </g>
-                      </svg>
-                      `
-                    }
-                  </a>
-                </div>
-              </td>
-          </tr>
-        `);
-      }
-    }
+    makeAddresses();
 
     $(':input[name=address_zipCode]').val('');
     $(':input[name=address_address]').val('');
@@ -786,8 +650,8 @@ $(function($) {
           elmMessage = $('#divMessage');
 
     let errors = [],
-        itens = JSON.parse($(':input[name=arrAddress]').val()),
-        tableAddress = $('#tableAddress').find('tbody');
+        itens = JSON.parse($(':input[name=arrAddress]').val());
+
 
     if(!zipCode)
       errors.push('Obrigatório informar o cep');
@@ -818,85 +682,9 @@ $(function($) {
 
     $(':input[name=arrAddress]').val(JSON.stringify(itens));
 
-    tableAddress.html('');
-    for(let i in itens) {
-      if(itens[i].insert == 'S') {
-        tableAddress.append(`
-          <tr data-id="${i}">
-              <td>
-                ${
-                  `<div class="form-check mt-2">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="isMainAddress"
-                      value="${i}"
-                      data-id="${i}"
-                      ${itens[i].main ? 'checked' : ''}
-                    >
-                    <label class="form-check-label">${itens[i].main ? 'Principal' : '&nbsp;'}</label>
-                  </div>`
-                }
-              </td>
-              <td>
-                ${itens[i].zipCode} - ${itens[i].address}, nº ${itens[i].number} <br>
-                ${itens[i].neighborhood}, ${itens[i].county}
-                ${itens[i].complement ? `<br>Complemento: ${itens[i].complement}`: ''}
-              </td>
-              <td data-title="Status">${
-                itens[i].active ?
-                `<span class="bg-green-200 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">Ativo</span>`
-                :
-                `<span class="bg-red-200 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-900">Inativo</span>`
-              }</td>
-              <td class="space-x-4">
-                <div class="flex gap-4 justify-center">
-                  <a href="#" name="btnDeleteAddress" data-id="${i}" title="Excluir o endereço">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <g color="#b91c1c">
-                        <path d="M3 6h18"></path>
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                      </g>
-                    </svg>
-                  </a>
+    makeAddresses();
 
-                  <a href="#" name="btnEditAddress" data-id="${i}" title="Editar o endereço">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <g color="#4338ca">
-                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                      </g>
-                    </svg>
-                  </a>
-
-                  <a href="#" name="btnToggleActiveAddress" data-id="${i}" title="${itens[i].active ? 'Desativar endereço': 'Ativar endereço'}">
-                    ${
-                      itens[i].active ?
-                      `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <g color="#b91c1c">
-                          <path d="M18.36 6.64A9 9 0 0 1 20.77 15"></path>
-                          <path d="M6.16 6.16a9 9 0 1 0 12.68 12.68"></path>
-                          <path d="M12 2v4"></path>
-                          <path d="m2 2 20 20"></path>
-                        </g>
-                      </svg>`
-                      : `
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <g color="#15803d">
-                          <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
-                          <line x1="12" y1="2" x2="12" y2="12"></line>
-                        </g>
-                      </svg>
-                      `
-                    }
-                  </a>
-                </div>
-              </td>
-          </tr>
-        `);
-      }
-    }
-
+    let tableAddress = $('#tableAddress').find('tbody');
     const tr = tableAddress.find(`tr[data-id=${controlId}]`);
     tr.css('background-color', '#fcf0a8');
     tr.css('transition', 'background-color 1000ms linear');
@@ -935,8 +723,7 @@ $(function($) {
 
     const controlId = $(this).attr('data-id');
 
-    let itens = JSON.parse($(':input[name=arrAddress]').val()),
-        tableAddress = $('#tableAddress').find('tbody');
+    let itens = JSON.parse($(':input[name=arrAddress]').val());
 
     for(let i in itens) {
       if(i === controlId) {
@@ -948,84 +735,7 @@ $(function($) {
 
     $(':input[name=arrAddress]').val(JSON.stringify(itens));
 
-    tableAddress.html('');
-    for(let i in itens) {
-      if(itens[i].insert == 'S') {
-        tableAddress.append(`
-          <tr data-id="${i}">
-              <td>
-                ${
-                  `<div class="form-check mt-2">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="isMainAddress"
-                      value="${i}"
-                      data-id="${i}"
-                      ${itens[i].main ? 'checked' : ''}
-                    >
-                    <label class="form-check-label">${itens[i].main ? 'Principal' : '&nbsp;'}</label>
-                  </div>`
-                }
-              </td>
-              <td>
-                ${itens[i].zipCode} - ${itens[i].address}, nº ${itens[i].number} <br>
-                ${itens[i].neighborhood}, ${itens[i].county}
-                ${itens[i].complement ? `<br>Complemento: ${itens[i].complement}`: ''}
-              </td>
-              <td data-title="Status">${
-                itens[i].active ?
-                `<span class="bg-green-200 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">Ativo</span>`
-                :
-                `<span class="bg-red-200 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-900">Inativo</span>`
-              }</td>
-              <td class="space-x-4">
-                <div class="flex gap-4 justify-center">
-                  <a href="#" name="btnDeleteAddress" data-id="${i}" title="Excluir o endereço">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <g color="#b91c1c">
-                        <path d="M3 6h18"></path>
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                      </g>
-                    </svg>
-                  </a>
-
-                  <a href="#" name="btnEditAddress" data-id="${i}" title="Editar o endereço">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <g color="#4338ca">
-                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                      </g>
-                    </svg>
-                  </a>
-
-                  <a href="#" name="btnToggleActiveAddress" data-id="${i}" title="${itens[i].active ? 'Desativar endereço': 'Ativar endereço'}">
-                    ${
-                      itens[i].active ?
-                      `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <g color="#b91c1c">
-                          <path d="M18.36 6.64A9 9 0 0 1 20.77 15"></path>
-                          <path d="M6.16 6.16a9 9 0 1 0 12.68 12.68"></path>
-                          <path d="M12 2v4"></path>
-                          <path d="m2 2 20 20"></path>
-                        </g>
-                      </svg>`
-                      : `
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <g color="#15803d">
-                          <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
-                          <line x1="12" y1="2" x2="12" y2="12"></line>
-                        </g>
-                      </svg>
-                      `
-                    }
-                  </a>
-                </div>
-              </td>
-          </tr>
-        `);
-      }
-    }
+    makeAddresses();
   });
 
   $(document).on('click', 'a[name=btnToggleActiveAddress]', function(e) {
